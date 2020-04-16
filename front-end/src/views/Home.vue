@@ -1,86 +1,65 @@
 <template>
 <div class="home">
-  <section class="image-gallery">
-    <div class="image" v-for="item in items" :key="item.id">
-      <h2>{{item.title}}</h2>
-      <img :src="item.path" />
-      <p>{{item.description}}</p>
-    </div>
-  </section>
+  <Cards :cards="cards" v-if="user" />
+  <Login :log="log" v-else-if="login" />
+  <Register :reg="reg" v-else-if="register" />
 </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import Register from '@/components/Register.vue';
+import Login from '@/components/Login.vue';
+import Cards from '@/components/Cards.vue';
 import axios from 'axios';
 export default {
-  
-  name: 'Home',
-  data() {
+  name: 'home',
+  data() { 
     return {
-     items: [],
+      log: false,
+      reg: true,
+      cards: []
     }
   },
-  created() {
-    this.getItems();
+  components: {
+    Register,
+    Login,
+    Cards
+  },
+  async created() {
+    try {
+      let response = await axios.get('/api/user');
+      this.$root.$data.user = response.data.user;
+    } catch (error) {
+      this.$root.$data.user = null;
+    }
+    this.getCards();
   },
   methods: {
-    async getItems() {
+    async getCards() {
       try {
-        let response = await axios.get("/api/items");
-        this.items = response.data;
-        return true;
+        let response = await axios.get("/api/card");
+        this.cards = response.data;
       } catch (error) {
+        this.error = error.response.data.message;
       }
     },
-  }, 
+  },
+  computed: {
+    user() {
+      return this.$root.$data.user;
+    }, 
+    register() {
+      return this.reg;
+    },
+    login() {
+      return this.log;
+    }
+  }
 }
 </script>
 
 <style scoped>
-.image h2 {
-  font-style: italic;
-}
-
-/* Masonry */
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-
-.image-gallery {
-  column-gap: 1.5em;
-}
-
-.image {
-  margin: 0 0 1.5em;
-  display: inline-block;
-  width: 100%;
-}
-
-.image img {
-  width: 100%;
-}
-
-/* Masonry on large screens */
-@media only screen and (min-width: 1024px) {
-  .image-gallery {
-    column-count: 4;
-  }
-}
-
-/* Masonry on medium-sized screens */
-@media only screen and (max-width: 1023px) and (min-width: 768px) {
-  .image-gallery {
-    column-count: 3;
-  }
-}
-
-/* Masonry on small screens */
-@media only screen and (max-width: 767px) and (min-width: 540px) {
-  .image-gallery {
-    column-count: 2;
-  }
+.home {
+  padding-top: 10px;
 }
 </style>

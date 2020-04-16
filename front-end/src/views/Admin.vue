@@ -1,30 +1,32 @@
 <template>
 <div class="admin">
-    <h1>The Admin Page!</h1>
+  <!-- display users name here -->
+    <h1>The {{user.username}} Page!</h1>
     <div class="heading">
       <div class="circle">1</div>
-      <h2>Add an Item</h2>
+      
+      <h2>Write a new Card!</h2>
     </div>
     <div class="add">
       <div class="form">
-        <input v-model="title" placeholder="Title">
+        <input v-model="recipient" placeholder="Recipient">
         <p></p>
-        <textarea v-model="description" placeholder="Description">
+        <textarea v-model="message" placeholder="Message">
         </textarea>
-        <p></p>
-        <input type="file" name="photo" @change="fileChanged">
+        <!-- <p>Optional Photo:</p>
+        <input type="file" name="photo" @change="fileChanged"> -->
         <button @click="upload">Upload</button>
       </div>
-      <div class="upload" v-if="addItem">
+      <!-- <div class="upload" v-if="addItem">
         <h2>{{addItem.title}}</h2>
         <img :src="addItem.path" />
-      </div>
-    </div>
+      </div> -->
+    <!-- </div>
        <div class="heading">
       <div class="circle">2</div>
       <h2>Edit/Delete an Item</h2>
-    </div>
-    <div class="edit">
+    </div> -->
+    <!-- <div class="edit">
       <div class="form">
         <input v-model="findTitle" placeholder="Search">
         <div class="suggestions" v-if="suggestions.length > 0">
@@ -43,94 +45,92 @@
       <div class="actions" v-if="findItem">
         <button @click="deleteItem(findItem)">Delete</button>
         <button @click="editItem(findItem)">Edit</button>
-      </div>
-    </div>
+      </div> -->
+    </div> 
 </div>
 </template>
 
 <script>
+
+// THIS PAGE IS TO VIEW YOUR HOME PAGE AND NAVIGATE AROUND
+
 import axios from 'axios';
 export default {
   name: 'Admin',
   data() {
     return {
-      title: "",
-      description: "",
-      file: null,
-      addItem: null,
-      items: [],
-      findTitle: "",
-      findItem: null,
+      recipient: "",
+      message: "",
+      user: this.$root.$data.user
     }
   },
   created() {
     this.getItems();
   },
   methods: {
-    fileChanged(event) {
-      this.file = event.target.files[0]
-    },
+    // fileChanged(event) {
+    //   this.file = event.target.files[0]
+    // },
     async upload() {
       try {
-        const formData = new FormData();
-        formData.append('photo', this.file, this.file.name)
-        let r1 = await axios.post('/api/photos', formData);
-        let r2 = await axios.post('/api/items', {
-          title: this.title,
-          path: r1.data.path,
-          description: this.description
+        // const formData = new FormData();
+        // formData.append('photo', this.file, this.file.name)
+        // let r1 = await axios.post('/api/photos', formData);
+
+        await axios.post('/api/card', {
+          recipient: this.recipient,
+          message: this.message,
         });
-        this.addItem = r2.data;
-        this.getItems();
       } catch (error) {
 	//do nothin
       }
     },
-    async getItems() {
-      try {
-        let response = await axios.get("/api/items");
-        this.items = response.data;
-        return true;
-      } catch (error) {
-	//do nothing
-      }
-    },
-    selectItem(item) {
-      this.findTitle = "";
-      this.findItem = item;
-    },
-    // make this work. tutorial 4 , deleting items, DONE!!!!!!!!!!!!!! Kendra like me
-    async deleteItem(item) {
-      try {
-        await axios.delete("/api/items/" + item._id);
-        this.findItem = null;
-        this.getItems();
-        return true;
-      } catch (error) {
-	//do nothing      
-      }
-    },
-    // make this work. tutorial 5 , editing items
-    async editItem(item) {
-      try {
-        await axios.put("/api/items/" + item._id, {
-          title: this.findItem.title,
-          description: this.findItem.description
-        });
-        this.findItem = null;
-        this.getItems();
-        return true;
-      } catch (error) {
-      // do nothing
-      }
-    },
-  },
-  computed: {
-    suggestions() {
-      let items = this.items.filter(item => item.title.toLowerCase().startsWith(this.findTitle.toLowerCase()));
-      return items.sort((a, b) => a.title > b.title);
-    }
-  },
+  }
+  //   async getItems() {
+  //     try {
+  //       let response = await axios.get("/api/items");
+  //       this.items = response.data;
+  //       return true;
+  //     } catch (error) {
+	// //do nothing
+  //     }
+  //   },
+  //   selectItem(item) {
+  //     this.findTitle = "";
+  //     this.findItem = item;
+  //   },
+  //   // make this work. tutorial 4 , deleting items, DONE!!!!!!!!!!!!!! Kendra like me
+  //   async deleteItem(item) {
+  //     try {
+  //       await axios.delete("/api/items/" + item._id);
+  //       this.findItem = null;
+  //       this.getItems();
+  //       return true;
+  //     } catch (error) {
+	// //do nothing      
+  //     }
+  //   },
+  //   // make this work. tutorial 5 , editing items
+  //   async editItem(item) {
+  //     try {
+  //       await axios.put("/api/items/" + item._id, {
+  //         title: this.findItem.title,
+  //         description: this.findItem.description
+  //       });
+  //       this.findItem = null;
+  //       this.getItems();
+  //       return true;
+  //     } catch (error) {
+  //     // do nothing
+  //     }
+  //   },
+  // },
+  // computed: {
+  //   suggestions() {
+  //     let items = this.items.filter(item => item.title.toLowerCase().startsWith(this.findTitle.toLowerCase()));
+  //     return items.sort((a, b) => a.title > b.title);
+  //   }
+  // },
 }
 </script>
 

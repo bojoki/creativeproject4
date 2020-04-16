@@ -3,11 +3,11 @@
   <div class="header">
     <router-link to="/">
       <div class="logo">
-        <img src="/ordinary.png">
+        <img src="./assets/love-card.png">
       </div>
     </router-link>
     <div class="title">
-      <h1>Museum of Ordinary Objects</h1>
+      <h1>Sweet Cards</h1>
     </div>
   </div>
   <div class="content">
@@ -16,7 +16,10 @@
   <div class="footer">
     <router-link to="/">Home</router-link> | 
     <router-link to="/admin">Admin</router-link> | 
-    <a href="https://github.com/bojoki/creativeproject4" target="_blank">Github</a>
+    <!-- <router-link to="/card">Card</router-link> |  -->
+    <!-- <router-link to="/shop">Shop</router-link> | 
+    <router-link to="/about">About</router-link> |  -->
+    <a href="https://github.com/bojoki/creativeproject4" target="_blank">GITHUB</a>
   </div>
 </div>
 </template>
